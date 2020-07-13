@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    /**
+     有 N 件物品和一个容量是 V 的背包。每件物品只能使用一次。
+
+     第 i 件物品的体积是 vi，价值是 wi。
+
+     求解将哪些物品装入背包，可使这些物品的总体积不超过背包容量，且总价值最大。
+     输出最大价值。
+
+     输入格式
+     N，V 分别表示物品数量和背包容积；weights表示体积数组，values表示价值。
+
+     输出格式
+     输出一个整数，表示最大价值。
+
+     数据范围
+     0<N,V≤1000
+     0<vi,wi≤1000
+     输入样例
+     4, 5, [1, 2, 3, 4], [2, 4, 5, 5]
+     输出样例：
+     8 (选重量2，3的2个，价值8)
+     */
+
+    N = 4
+    W = 5
+    weights = [1, 2, 3, 4]
+    values = [2, 4, 5, 5]
+
+    function bag0_1(N, W, weights, values) {
+        if (N <= 0 || W <= 0) {
+            return 0
+        }
+
+        dp = []
+
+        for (let i=0; i<=N; i++){
+            dp.push([])
+            for (let j=0; j<=W; j++) {
+                dp[i][j] = 0
+            }
+        }
+        console.log(dp)
+
+        for (let i=1; i<N; i++) { // i 代表在抉择第i个选不选，最多第N个
+            for (let j=1; j<=W; j++) { // j代表当前负重有多少，从小往大带memo的推，最大不超过W
+                if (j > weights[j]) { // 当前容量大于目前便利的第i个元素需要的体积，因此需要从 取i 和 不取i 中取价值最大值
+                    dp[i][j] = Math.max(dp[i-1][j - weights[i]] + values[i], dp[i-1][j]) // 前者是 在i-1中给j-weights[i]的容积取最大值，后者是 在 i-1中给j的容积取最大值，取两者中较大的
+                } else { // 当前遍历的第i个放不下，只能不选它
+
+                    dp[i][j] = dp[i-1][j]
+                }
+            }
+        }
+        console.log(dp)
+        max = -Infinity
+
+        for (let j=0; j<W; j++) {
+            max = max<dp[N][j] ? dp[N][j] : max
+        }
+        return max
+    }
+    res = bag0_1(N, W, weights, values)
+    console.log(res)
+
+</script>
+</body>
+
+</html>
